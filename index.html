@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Maze Escape</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="top-bar">
+        <div>
+          <p class="eyebrow">Arcade Challenge</p>
+          <h1>Maze Escape</h1>
+        </div>
+        <div class="top-actions">
+          <button id="menuBtn" class="secondary-btn">Main Menu</button>
+          <button id="restartBtn" class="primary-btn">Restart Level</button>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <section id="menuScreen" class="screen menu-screen active">
+          <div class="panel menu-card">
+            <h2>Find the Exit</h2>
+            <p class="intro-text">
+              Move the blue player through each maze, reach the green exit tile, and escape every level.
+            </p>
+
+            <button id="startBtn" class="action-btn">Start Game</button>
+
+            <div class="menu-grid">
+              <button id="levelSelectBtn" class="secondary-btn">Select Level</button>
+              <button id="instructionsBtn" class="secondary-btn">Instructions</button>
+            </div>
+
+            <div id="levelButtons" class="level-buttons"></div>
+
+            <div id="instructionsPanel" class="instructions-panel hidden">
+              <h3>How to Play</h3>
+              <ul>
+                <li>Use the arrow keys to move one tile at a time.</li>
+                <li>Blue squares are walls, while open paths are safe to walk on.</li>
+                <li>Reach the green exit tile to complete the level.</li>
+                <li>Each level becomes bigger and more complex.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="gameScreen" class="screen game-screen hidden">
+          <div class="status-card">
+            <div>
+              <p class="eyebrow">Current Level</p>
+              <h2 id="levelTitle">Level 1</h2>
+            </div>
+            <p id="statusText" class="status-text">Find the green exit tile.</p>
+          </div>
+
+          <div class="board-wrapper">
+            <div id="board" class="board"></div>
+          </div>
+
+          <div id="mobileControls" class="mobile-controls"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="overlay" class="overlay hidden" aria-live="polite">
+      <div class="overlay-card">
+        <h3 id="overlayTitle">Level Complete!</h3>
+        <p id="overlayText">Nice work. Preparing the next maze...</p>
+        <button id="overlayBtn" class="action-btn">Continue</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
