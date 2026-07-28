@@ -6,131 +6,101 @@ const levels = [
     grid: [
       "########",
       "#S....E#",
+      "########",
+    ],
+  },
+  {
+    name: "Corner Turn",
+    grid: [
+      "########",
+      "#S.#####",
       "#..#####",
-      "#......#",
+      "#...E###",
       "########",
     ],
   },
   {
-    name: "Twist Turn",
+    name: "Zigzag Step",
     grid: [
       "########",
-      "#S#..#E#",
-      "#.#..#.#",
-      "#.#..#.#",
-      "#......#",
+      "#S.#####",
+      "#...####",
+      "#...E###",
       "########",
     ],
   },
   {
-    name: "Crossroads",
+    name: "Wide Turn",
+    grid: [
+      "########",
+      "#S..####",
+      "#...####",
+      "#...E###",
+      "########",
+    ],
+  },
+  {
+    name: "Switchback",
+    grid: [
+      "########",
+      "#S.#####",
+      "#..#####",
+      "#.E#####",
+      "########",
+    ],
+  },
+  {
+    name: "Boxed In",
+    grid: [
+      "########",
+      "#S..####",
+      "#...####",
+      "#...####",
+      "#...E###",
+      "########",
+    ],
+  },
+  {
+    name: "Ladder Run",
     grid: [
       "#########",
-      "#S..#...#",
-      "###.#.#.#",
-      "#...#.#E#",
-      "#.#.#.#.#",
-      "#.#...#.#",
-      "#..####.#",
+      "#S.######",
+      "#..######",
+      "#..######",
+      "#...E####",
       "#########",
     ],
   },
   {
-    name: "Spiral Drift",
+    name: "Bridge Bend",
     grid: [
       "#########",
       "#S..#####",
-      "#.#..#..#",
-      "#.#.##.#E",
-      "#.#....##",
-      "#.#.#####",
-      "#....#..#",
+      "#...#####",
+      "#...#####",
+      "#...E####",
       "#########",
     ],
   },
   {
-    name: "Mini Labyrinth",
+    name: "Mirror Path",
     grid: [
-      "##########",
-      "#S..#....#",
-      "#.#.#.##.#",
-      "#.#.#....#",
-      "#.#.####.#",
-      "#...#..#.#",
-      "###.#..#E#",
-      "#....#....#",
-      "##########",
+      "#########",
+      "#S.######",
+      "#..######",
+      "#.E#####",
+      "#########",
     ],
   },
   {
-    name: "The Loop",
+    name: "Final Sprint",
     grid: [
-      "############",
-      "#S..#......#",
-      "#.#.#.####.#",
-      "#.#.#....#.#",
-      "#.#.####.#.#",
-      "#...#..#.#.#",
-      "###.#..#.#E#",
-      "#....##....#",
-      "############",
-    ],
-  },
-  {
-    name: "Canyon Maze",
-    grid: [
-      "############",
-      "#S..#.....E#",
-      "#.#.#.###.#",
-      "#.#.#...#.#",
-      "#.#.###.#.#",
-      "#...#...#.#",
-      "####.###.#.#",
-      "#....#.....#",
-      "############",
-    ],
-  },
-  {
-    name: "Dense Forest",
-    grid: [
-      "#############",
-      "#S....#....E#",
-      "#.#.##.#.####",
-      "#.#....#....#",
-      "#.#.####.##.#",
-      "#.#....#....#",
-      "#.####.#.##.#",
-      "#........#..#",
-      "#############",
-    ],
-  },
-  {
-    name: "Shadow Grid",
-    grid: [
-      "###############",
-      "#S..#....#....#",
-      "#.#.#.##.#.##.#",
-      "#.#.#....#....#",
-      "#.#.####.####.#",
-      "#...#....#....E",
-      "###.#.##.#.####",
-      "#.....#......#",
-      "###############",
-    ],
-  },
-  {
-    name: "Final Escape",
-    grid: [
-      "################",
-      "#S...#....#...E#",
-      "#.#.#.##.#.##.#",
-      "#.#.#....#....#",
-      "#.#.####.####.#",
-      "#...#........#",
-      "###.#.####.#.#",
-      "#........#.#.#",
-      "#.######.#.#.#",
-      "################",
+      "#########",
+      "#S..#####",
+      "#...#####",
+      "#...#####",
+      "#...E####",
+      "#########",
     ],
   },
 ];
@@ -141,7 +111,7 @@ const state = {
   currentLevelIndex: 0,
   player: { row: 0, col: 0 },
   board: null,
-  unlockedLevels: 1,
+  unlockedLevels: levels.length,
   isPlaying: false,
   isTransitioning: false,
   completedFinalLevel: false,
@@ -167,8 +137,10 @@ const levelSelectBtnEl = document.getElementById("levelSelectBtn");
 const instructionsBtnEl = document.getElementById("instructionsBtn");
 
 function init() {
-  // Restore unlocked progress from localStorage so the player can return later.
-  state.unlockedLevels = Math.max(1, Number(localStorage.getItem(STORAGE_KEY) || 1));
+  // Start every level unlocked so new players can jump straight in.
+  state.unlockedLevels = levels.length;
+  const savedUnlocked = Number(localStorage.getItem(STORAGE_KEY) || levels.length);
+  state.unlockedLevels = Math.max(levels.length, savedUnlocked);
   bindEvents();
   renderLevelButtons();
   updateMobileControls();
@@ -212,7 +184,6 @@ function showMenu() {
 
 function startLevel(index) {
   if (index < 0 || index >= levels.length) return;
-  if (index + 1 > state.unlockedLevels) return;
 
   clearPendingLevelTransition();
   state.currentLevelIndex = index;
