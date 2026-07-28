@@ -136,6 +136,7 @@ const levels = [
 ];
 
 const STORAGE_KEY = "maze-escape-unlocked";
+const NEXT_LEVEL_DELAY_MS = 2000;
 const state = {
   currentLevelIndex: 0,
   player: { row: 0, col: 0 },
@@ -144,6 +145,7 @@ const state = {
   isPlaying: false,
   isTransitioning: false,
   completedFinalLevel: false,
+  nextLevelTimer: null,
 };
 
 const levelTitleEl = document.getElementById("levelTitle");
@@ -189,7 +191,15 @@ function toggleSection(element) {
   element.classList.toggle("hidden");
 }
 
+function clearPendingLevelTransition() {
+  if (state.nextLevelTimer) {
+    clearTimeout(state.nextLevelTimer);
+    state.nextLevelTimer = null;
+  }
+}
+
 function showMenu() {
+  clearPendingLevelTransition();
   overlayEl.classList.add("hidden");
   menuScreenEl.classList.remove("hidden");
   menuScreenEl.classList.add("active");
@@ -204,6 +214,7 @@ function startLevel(index) {
   if (index < 0 || index >= levels.length) return;
   if (index + 1 > state.unlockedLevels) return;
 
+  clearPendingLevelTransition();
   state.currentLevelIndex = index;
   state.isPlaying = true;
   state.isTransitioning = false;
@@ -224,10 +235,12 @@ function startLevel(index) {
 
 function restartLevel() {
   if (!state.isPlaying) return;
+  clearPendingLevelTransition();
   startLevel(state.currentLevelIndex);
 }
 
 function continueFromOverlay() {
+  clearPendingLevelTransition();
   overlayEl.classList.add("hidden");
   if (state.completedFinalLevel) {
     state.completedFinalLevel = false;
@@ -385,10 +398,11 @@ function completeLevel() {
     return;
   }
 
-  showOverlay("Level Complete!", "A new maze is loading in 2 seconds...", "Continue");
-  setTimeout(() => {
+  showOverlay("Level Complete!", `A new maze is loading in ${NEXT_LEVEL_DELAY_MS / 1000} seconds...`, "Continue");
+  state.nextLevelTimer = window.setTimeout(() => {
+    state.nextLevelTimer = null;
     startLevel(state.currentLevelIndex + 1);
-  }, 2000);
+  }, NEXT_LEVEL_DELAY_MS);
 }
 
 function showOverlay(title, text, buttonText) {
